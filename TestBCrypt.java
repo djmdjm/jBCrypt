@@ -159,7 +159,7 @@ public class TestBCrypt extends TestCase {
 
 	/**
 	 * Test method for 'BCrypt.checkpw(String, String)'
-	 * expecting success
+	 * expecting failure
 	 */
 	public void testCheckpw_failure() {
 		System.out.print("BCrypt.checkpw w/ bad passwords: ");

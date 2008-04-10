@@ -12,17 +12,19 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+import java.io.UnsupportedEncodingException;
+
 import java.security.SecureRandom;
 
 /**
  * BCrypt implements OpenBSD-style Blowfish password hashing using
- * the scheme describes in "A Future-Adaptable Password Scheme" by
+ * the scheme described in "A Future-Adaptable Password Scheme" by
  * Niels Provos and David Mazieres.
  * <p>
  * This password hashing system tries to thwart off-line password
  * cracking using a computationally-intensive hashing algorithm,
  * based on Bruce Schneier's Blowfish cipher. The work factor of
- * the algorithm is parametised, so it can be increased as
+ * the algorithm is parameterised, so it can be increased as
  * computers get faster.
  * <p>
  * Usage is really simple. To hash a password for the first time,
@@ -664,7 +666,13 @@ public class BCrypt {
 		rounds = Integer.parseInt(salt.substring(off, off + 2));
 
 		real_salt = salt.substring(off + 3, off + 25);
-		passwordb = (password + (minor >= 'a' ? "\000" : "")).getBytes();
+		try {
+			passwordb = (password + (minor >= 'a' ? "\000" : "")).getBytes("US-ASCII");
+		} catch (UnsupportedEncodingException uee) {
+			// The JDK guarantees that US-ASCII is supported.
+			throw new AssertionError("US-ASCII is not supported");
+		}
+
 		saltb = decode_base64(real_salt, BCRYPT_SALT_LEN);
 
 		B = new BCrypt();
@@ -689,12 +697,12 @@ public class BCrypt {
 	 * @param log_rounds	the log2 of the number of rounds of
 	 * hashing to apply - the work factor therefore increases as
 	 * 2**log_rounds.
+	 * @param random		an instance of SecureRandom to use
 	 * @return	an encoded salt value
 	 */
-	public static String gensalt(int log_rounds) {
+	public static String gensalt(int log_rounds, SecureRandom random) {
 		StringBuffer rs = new StringBuffer();
 		byte rnd[] = new byte[BCRYPT_SALT_LEN];
-		SecureRandom random = new SecureRandom();
 
 		random.nextBytes(rnd);
 
@@ -705,6 +713,17 @@ public class BCrypt {
 		rs.append("$");
 		rs.append(encode_base64(rnd, rnd.length));
 		return rs.toString();
+	}
+
+	/**
+	 * Generate a salt for use with the BCrypt.hashpw() method
+	 * @param log_rounds	the log2 of the number of rounds of
+	 * hashing to apply - the work factor therefore increases as
+	 * 2**log_rounds.
+	 * @return	an encoded salt value
+	 */
+	public static String gensalt(int log_rounds) {
+		return gensalt(log_rounds, new SecureRandom());
 	}
 
 	/**
