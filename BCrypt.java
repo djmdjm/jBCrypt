@@ -513,12 +513,13 @@ public class BCrypt {
 	 * @return	the next word of material from data
 	 */
 	private static int streamtoword(byte data[], int offp[]) {
-		int i, word = 0, off = offp[0], dlen = data.length;
+		int i;
+		int word = 0;
+		int off = offp[0];
 
 		for (i = 0; i < 4; i++) {
-			word = (word << 8) | (data[off++] & 0xff);
-			if (off > dlen)
-				off = 0;
+			word = (word << 8) | (data[off] & 0xff);
+			off = (off + 1) % data.length;
 		}
 
 		offp[0] = off;
