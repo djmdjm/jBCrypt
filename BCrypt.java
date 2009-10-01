@@ -653,13 +653,14 @@ public class BCrypt {
 
 		if (salt.charAt(0) != '$' || salt.charAt(1) != '2')
 			throw new IllegalArgumentException ("Invalid salt version");
-		if (salt.charAt(1) != '$') {
+		if (salt.charAt(2) == '$')
+			off = 3;
+		else {
 			minor = salt.charAt(2);
 			if (minor != 'a' || salt.charAt(3) != '$')
 				throw new IllegalArgumentException ("Invalid salt revision");
 			off = 4;
-		} else
-			off = 3;
+		}
 
 		// Extract number of rounds
 		if (salt.charAt(off + 2) > '$')
