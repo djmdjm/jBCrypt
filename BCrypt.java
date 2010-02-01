@@ -669,10 +669,9 @@ public class BCrypt {
 
 		real_salt = salt.substring(off + 3, off + 25);
 		try {
-			passwordb = (password + (minor >= 'a' ? "\000" : "")).getBytes("US-ASCII");
+			passwordb = (password + (minor >= 'a' ? "\000" : "")).getBytes("UTF-8");
 		} catch (UnsupportedEncodingException uee) {
-			// The JDK guarantees that US-ASCII is supported.
-			throw new AssertionError("US-ASCII is not supported");
+			throw new AssertionError("UTF-8 is not supported");
 		}
 
 		saltb = decode_base64(real_salt, BCRYPT_SALT_LEN);
