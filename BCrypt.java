@@ -616,7 +616,7 @@ public class BCrypt {
 
 		init_key();
 		ekskey(salt, password);
-		for (i = 0; i < rounds; i++) {
+		for (i = 0; i != rounds; i++) {
 			key(password);
 			key(salt);
 		}
