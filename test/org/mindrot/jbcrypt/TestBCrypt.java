@@ -12,6 +12,9 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+package org.mindrot.jbcrypt;
+
+import org.mindrot.jbcrypt.BCrypt;
 import junit.framework.TestCase;
 
 /**
